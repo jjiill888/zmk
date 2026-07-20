@@ -33,11 +33,13 @@ uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
     // Simple linear approximation of a battery based off adafruit's discharge graph:
     // https://learn.adafruit.com/li-ion-and-lipoly-batteries/voltages
 
-    if (bat_mv >= 4200) {
+    // Calibrated for this board: measured full-charge voltage is ~4075 mV
+    // (stock 4200 mV ceiling made a full battery read as 85%).
+    if (bat_mv >= 4070) {
         return 100;
     } else if (bat_mv <= 3450) {
         return 0;
     }
 
-    return bat_mv * 2 / 15 - 459;
+    return (bat_mv - 3450) * 100 / (4070 - 3450);
 }
